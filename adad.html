@@ -1,0 +1,602 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmed Dede</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+
+    <style>
+        /* --- CSS DEĞİŞKENLERİ --- */
+        :root {
+            /* SİTE GENELİ AÇIK TEMA */
+            --bg-color: #f4f7fc;
+            --container-bg: #ffffff;
+            --text-main: #1a1a2e;
+            --text-muted: #64748b;
+            --accent: #3b71fe;
+            --accent-hover: #2a5de3;
+            --shadow: 0 15px 40px rgba(0,0,0,0.06);
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --input-bg: #f8fafc;
+            --glow-opacity: 0.55;
+            --cursor-glow-opacity: 0.06;
+
+            /* DISCORD KARTI AÇIK TEMA */
+            --dc-bg: #ffffff;
+            --dc-banner-bg: #2b2d31; 
+            --dc-spotify-bg: #f2f3f5;
+            --dc-text: #060607;
+            --dc-muted: #4e5058;
+            --dc-btn: #ebedef;
+            --dc-btn-hover: #d4d7dc;
+            --dc-btn-text: #060607;
+            --dc-border: #e3e5e8;
+        }
+
+        [data-theme="dark"] {
+            /* SİTE GENELİ KARANLIK TEMA */
+            --bg-color: #0f172a;
+            --container-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --input-bg: #0f172a;
+            --shadow: 0 15px 40px rgba(0,0,0,0.4);
+            --glow-opacity: 0.85; 
+            --cursor-glow-opacity: 0.12;
+
+            /* DISCORD KARTI KARANLIK TEMA */
+            --dc-bg: #111214;
+            --dc-banner-bg: #1e1f22;
+            --dc-spotify-bg: #2b2d31;
+            --dc-text: #f8fafc;
+            --dc-muted: #b5bac1;
+            --dc-btn: #313338;
+            --dc-btn-hover: #2b2d31;
+            --dc-btn-text: #f8fafc;
+            --dc-border: #1e1f22;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
+        body { background-color: var(--bg-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; color: var(--text-main); overflow-x: hidden; position: relative; }
+
+        /* MOUSE GLOW */
+        .cursor-glow { position: fixed; top: 0; left: 0; width: 500px; height: 500px; background: radial-gradient(circle, var(--accent) 0%, transparent 60%); border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); opacity: var(--cursor-glow-opacity); z-index: 0; will-change: transform; }
+
+        .container { background-color: var(--container-bg); width: 90%; max-width: 1200px; border-radius: 24px; box-shadow: var(--shadow); padding: 40px 60px; min-height: 80vh; display: flex; flex-direction: column; position: relative; z-index: 10; }
+
+        /* ANİMASYONLAR */
+        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes blobMorph { 0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; } 50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; } 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+        @keyframes fadePageIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* NAVBAR */
+        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; }
+        .logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+        .nav-wrapper { display: flex; align-items: center; gap: 40px; }
+        nav ul { list-style: none; display: flex; gap: 35px; }
+        nav ul li a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.95rem; position: relative; cursor: pointer; }
+        nav ul li a.active, nav ul li a:hover { color: var(--accent); }
+        nav ul li a.active::after { content: ''; position: absolute; width: 100%; height: 3px; background-color: var(--accent); bottom: -8px; left: 0; border-radius: 5px; }
+        .theme-btn { background: none; border: none; color: var(--text-main); font-size: 1.4rem; cursor: pointer; outline: none; transition: transform 0.3s ease; }
+        .theme-btn:hover { transform: rotate(15deg) scale(1.1); color: var(--accent); }
+
+        .page-section { display: none; flex: 1; margin-top: 20px; animation: fadePageIn 0.6s ease-out forwards; }
+        .page-section.active { display: flex; }
+        .section-title { font-size: 3rem; font-weight: 800; margin-bottom: 30px; color: var(--text-main); width: 100%; }
+        .section-title span { color: var(--accent); }
+
+        /* HOME */
+        #home { justify-content: space-between; align-items: center; }
+        .text-content { flex: 1; }
+        .text-content h1 { font-size: 5rem; font-weight: 800; line-height: 1.1; margin-bottom: 30px; letter-spacing: -1.5px; opacity: 0; animation: fadeInLeft 0.8s ease-out forwards; }
+        .text-content h1 .highlight { color: var(--accent); }
+
+        .social-icons { margin-top: 50px; display: flex; gap: 25px; opacity: 0; animation: fadeInUp 0.8s ease-out 0.4s forwards; }
+        .social-btn { position: relative; color: var(--text-main); font-size: 1.8rem; text-decoration: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; justify-content: center; align-items: center; }
+        .social-btn[data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%) translateY(10px) scale(0.8); background-color: var(--text-main); color: var(--container-bg); padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .social-btn[data-tooltip]::before { content: ''; position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%) translateY(10px); border-width: 6px; border-style: solid; border-color: var(--text-main) transparent transparent transparent; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .social-btn:hover { transform: translateY(-6px) scale(1.1); }
+        .social-btn:hover::after, .social-btn:hover::before { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+        .social-btn.disco   rd:hover { color: #5865F2; } .social-btn.github:hover { color: #333; } [data-theme="dark"] .social-btn.github:hover { color: #ffffff; }
+        .social-btn.instagram:hover { color: transparent; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; transform: translateY(-6px) scale(1.1); }
+        .image-content { flex: 1; display: flex; justify-content: flex-end; align-items: center; opacity: 0; animation: fadeInRight 1s ease-out 0.3s forwards; }
+        .blob-wrapper { position: relative; animation: float 6s ease-in-out infinite; z-index: 2; }
+        .blob-wrapper::before { content: ''; position: absolute; top: 5%; left: 5%; width: 90%; height: 90%; background-image: url('17732646902281 (1).jpg'); background-size: cover; background-position: center; filter: blur(45px) saturate(150%); opacity: var(--glow-opacity); z-index: -1; animation: blobMorph 8s ease-in-out infinite; transition: opacity 0.4s ease; }
+        .blob-bg { width: 420px; height: 420px; background-color: var(--container-bg); overflow: hidden; display: flex; justify-content: center; align-items: center; animation: blobMorph 8s ease-in-out infinite; box-shadow: inset 0 0 20px rgba(0,0,0,0.05); }
+        .blob-bg img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ABOUT */
+        #about { flex-direction: column; align-items: flex-start; }
+        .about-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 50px; width: 100%; }
+        .about-text p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.8; margin-bottom: 20px; }
+        .about-text p strong { color: var(--text-main); font-weight: 600; }
+        .about-cards { display: flex; flex-direction: column; gap: 20px; }
+        .info-card { background-color: var(--input-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 16px; display: flex; align-items: center; gap: 20px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .info-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--accent); }
+        .info-card i { font-size: 2rem; color: var(--accent); background-color: rgba(59, 113, 254, 0.1); padding: 15px; border-radius: 12px; }
+        .info-details h4 { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; }
+        .info-details p { font-size: 1.1rem; color: var(--text-main); font-weight: 700; }
+
+        /* SKILLS */
+        #skills { flex-direction: column; align-items: flex-start; }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 25px; width: 100%; margin-top: 10px; }
+        .skill-card { background-color: var(--input-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 30px 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: default; }
+        .skill-card i { font-size: 3.5rem; color: var(--text-main); transition: color 0.3s ease, transform 0.3s ease; }
+        .skill-card span { font-size: 1rem; font-weight: 600; color: var(--text-main); }
+        .skill-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); border-color: var(--accent); }
+        .skill-card:hover i { transform: scale(1.1); }
+        .skill-card:hover .devicon-javascript-plain { color: #F7DF1E; } .skill-card:hover .devicon-python-plain { color: #3776AB; } .skill-card:hover .devicon-java-plain { color: #007396; } .skill-card:hover .devicon-csharp-plain { color: #9B4993; } .skill-card:hover .devicon-cplusplus-plain { color: #00599C; } .skill-card:hover .devicon-html5-plain { color: #E34F26; } .skill-card:hover .devicon-css3-plain { color: #1572B6; } .skill-card:hover .devicon-php-plain { color: #777BB4; } .skill-card:hover .devicon-mysql-plain { color: #4479A1; }
+
+        /* WORKS (PREMIUM TEXT CARDS) */
+        #works { flex-direction: column; align-items: flex-start; }
+        .works-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; width: 100%; margin-top: 10px; padding-bottom: 20px; }
+        .project-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 35px 30px; display: flex; flex-direction: column; gap: 15px; text-decoration: none; position: relative; overflow: hidden; z-index: 1; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        .project-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(59, 113, 254, 0.05) 0%, transparent 100%); z-index: -1; opacity: 0; transition: opacity 0.4s ease; }
+        .project-card:hover::before { opacity: 1; }
+        .project-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .project-header { display: flex; justify-content: space-between; align-items: center; }
+        .project-header h3 { color: var(--text-main); font-size: 1.5rem; font-weight: 700; transition: color 0.3s ease; }
+        .project-header i { color: var(--text-muted); font-size: 1.3rem; transition: all 0.3s ease; }
+        .project-card p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; }
+        .project-card:hover .project-header h3, .project-card:hover .project-header i { color: var(--accent); }
+        .project-card:hover .project-header i { transform: translate(3px, -3px) scale(1.1); }
+
+        /* --- CONTACT (DISCORD PROFILE KARTI) --- */
+        #contact { flex-direction: column; align-items: center; justify-content: flex-start; }
+        
+        .discord-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 40px 0;
+        }
+
+        .discord-profile {
+            width: 100%;
+            max-width: 350px;
+            background-color: var(--dc-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            position: relative;
+            border: 1px solid var(--dc-border);
+            text-align: left;
+            /* Uçma Efekti */
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Yalnızca metin elementlerini Discord fontuna zorluyoruz */
+        .discord-profile div, .discord-profile p, .discord-profile h3, .discord-profile span {
+            font-family: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        .dc-banner { width: 100%; height: 100px; background-color: var(--dc-banner-bg); }
+        .dc-header { position: relative; padding: 0 16px; }
+
+        .dc-avatar-wrapper {
+            position: absolute; top: -45px; left: 16px; width: 90px; height: 90px;
+            border-radius: 50%; background-color: var(--dc-bg); padding: 6px;
+        }
+        .dc-avatar-wrapper img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+        .dc-status {
+            position: absolute; bottom: 6px; right: 6px; width: 22px; height: 22px;
+            background-color: #f23f42; border-radius: 50%; border: 4px solid var(--dc-bg);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .dc-status::after { content: ''; width: 10px; height: 3px; background-color: #fff; border-radius: 2px; }
+
+        .dc-body { padding: 55px 16px 16px 16px; }
+        .dc-display-name { font-size: 1.4rem; font-weight: 800; color: var(--dc-text); margin-bottom: 2px; line-height: 1.2; }
+        
+        .dc-username { 
+            font-size: 0.95rem; 
+            color: var(--dc-text); 
+            font-weight: 500; 
+            margin-bottom: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+        }
+
+        /* ROZET (BADGE) STİLLERİ GÜNCELLENDİ */
+        .dc-badges {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 2px;
+        }
+        
+        .dc-badge {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
+        
+        /* 24px rozet ayarlaması */
+        img[src="discordbadge.png"] {
+            width: 24px;
+            height: 24px;
+        }
+
+        .dc-link { color: #00A8FC; text-decoration: none; font-size: 0.95rem; display: inline-block; margin-bottom: 20px; }
+        .dc-link:hover { text-decoration: underline; }
+
+        /* SPOTIFY KARTI */
+        .dc-spotify-card {
+            background-color: var(--dc-spotify-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
+            display: none; 
+        }
+
+        .dc-section-title { 
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            color: var(--dc-text); 
+            margin-bottom: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .dc-spotify { display: flex; gap: 12px; }
+        .dc-album { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
+        .dc-song-info { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+        .dc-song-title { color: var(--dc-text); font-weight: 700; font-size: 0.9rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dc-song-artist { color: var(--dc-muted); font-size: 0.85rem; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Canlı Spotify Çubuğu */
+        .dc-progress-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--dc-muted);
+        }
+
+        .dc-progress-bar {
+            flex: 1;
+            height: 4px;
+            background-color: rgba(181, 186, 193, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .dc-progress-fill {
+            width: 0%;
+            height: 100%;
+            background-color: var(--dc-text);
+            border-radius: 2px;
+            transition: width 0.5s linear; 
+        }
+
+        .dc-btn {
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+            width: 100%; background-color: var(--dc-btn); color: var(--dc-btn-text);
+            padding: 10px; border-radius: 4px; text-decoration: none;
+            font-weight: 600; font-size: 0.9rem; transition: background-color 0.2s;
+        }
+        .dc-btn:hover { background-color: var(--dc-btn-hover); }
+
+        /* MOBİL UYUMLULUK */
+        @media (max-width: 992px) {
+            #home { flex-direction: column-reverse; text-align: center; gap: 50px; margin-top: 40px; }
+            .image-content { justify-content: center; }
+            .text-content h1 { font-size: 3.5rem; }
+            .social-icons { justify-content: center; margin-top: 40px; }
+            nav ul { display: none; }
+            .blob-bg { width: 300px; height: 300px; }
+            .cursor-glow { display: none; }
+            .about-grid { grid-template-columns: 1fr; gap: 30px; }
+            .skills-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; }
+            .skill-card { padding: 20px 10px; }
+            .skill-card i { font-size: 2.5rem; }
+            .works-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">Ahmed Dede</div>
+            <div class="nav-wrapper">
+                <nav>
+                    <ul>
+                        <li><a href="#home" class="nav-link active">Home</a></li>
+                        <li><a href="#about" class="nav-link">About</a></li>
+                        <li><a href="#skills" class="nav-link">Skills</a></li>
+                        <li><a href="#works" class="nav-link">Works</a></li>
+                        <li><a href="#contact" class="nav-link">Contact</a></li>
+                    </ul>
+                </nav>
+                <button class="theme-btn" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <section id="home" class="page-section active">
+            <div class="text-content">
+                <h1>Hi,<br>I'm <span class="highlight">Ahmed Dede</span></h1>
+                
+                <div class="social-icons">
+                    <a href="https://discord.gg/mF3bjSvbHJ" target="_blank" class="social-btn discord" data-tooltip="@enderahmet">
+                        <i class="fa-brands fa-discord"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@kuton_" target="_blank" class="social-btn tiktok" data-tooltip="@kuton_">
+                        <i class="fa-brands fa-tiktok"></i>
+                    </a>
+                    <a href="https://instagram.com/Ahm3tym" target="_blank" class="social-btn instagram" data-tooltip="@Ahm3tym">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="image-content">
+                <div class="blob-wrapper">
+                    <div class="blob-bg">
+                        <img src="123456789.jpeg" alt="Ahmet">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="page-section">
+            <h2 class="section-title">About <span>Me</span></h2>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p>Merhaba ben <strong>Ahmet Dede</strong>, 20 Yaşındayım Kocaeli'de Bilgisayar Mühendisliği okuyorum.</p>
+                </div>
+                <div class="about-cards">
+                    <div class="info-card">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <div class="info-details"><h4>School</h4><p>KOSTU University</p></div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fa-solid fa-briefcase"></i>
+                        <div class="info-details"><h4>Job</h4><p>Computer Engineer</p></div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fa-solid fa-code"></i>
+                        <div class="info-details"><h4>Digital Passion</h4><p>Software & Web Dev</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="page-section">
+            <h2 class="section-title">My <span>Skills</span></h2>
+            <div class="skills-grid">
+                <div class="skill-card"><i class="devicon-python-plain"></i><span>Python</span></div>
+                <div class="skill-card"><i class="devicon-cplusplus-plain"></i><span>C++</span></div>
+                <div class="skill-card"><i class="devicon-javascript-plain"></i><span>JavaScript</span></div>
+                <div class="skill-card"><i class="devicon-mysql-plain"></i><span>SQL</span></div>
+            </div>
+        </section>
+
+        <section id="works" class="page-section">
+            <h2 class="section-title">Popular <span>Projects</span></h2>
+            
+            <div class="works-grid">
+                <a href="proj.html" target="_blank" class="project-card">
+                    <div class="project-header">
+                        <h3>Projelerim Gizlidir.</h3>
+                    </div>
+                    <p>Projelerim Gizlidir.</p>
+                </a>
+            </div>
+        </section>
+
+        <section id="contact" class="page-section">
+            <h2 class="section-title" style="text-align: center;">Contact via <span>Discord</span></h2>
+            
+            <div class="discord-wrapper">
+                
+                <div class="discord-profile">
+                    <div class="dc-banner"></div>
+                    
+                    <div class="dc-header">
+                        <div class="dc-avatar-wrapper">
+                            <img src="123456789.jpeg" id="discordAvatar" alt="KuTon">
+                            <div class="dc-status"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="dc-body">
+                        <h3 class="dc-display-name" id="discordGlobalName">KuTon</h3>
+                        <p class="dc-username">
+                            <span id="discordUsername">KuTon</span>
+                            
+                            <span class="dc-badges">
+                                <img src="12345.png" class="dc-badge" alt="Boost Badge">
+                                <img src="123456.png" class="dc-badge" alt="Discord Badge">
+                                <img src="1111.png" class="dc-badge" alt="Discord Badge">
+                                <img src="6601.png" class="dc-badge" alt="Discord Badge">
+                            </span>
+                        </p>
+                        <a href="https://discord.gg/NPc9DR4HRH" class="dc-link" target="_blank">Discord Sunucum</a>
+                        
+                        <div class="dc-spotify-card" id="spotifyBlock">
+                            <div class="dc-section-title">
+                                <span>LISTENING TO SPOTIFY</span>
+                                <i class="fa-brands fa-spotify" style="color: #1DB954; font-size: 1.1rem;"></i>
+                            </div>
+                            <div class="dc-spotify">
+                                <img src="" alt="Album" class="dc-album" id="spotifyAlbumArt">
+                                <div class="dc-song-info">
+                                    <div class="dc-song-title" id="spotifySongTitle">Yükleniyor...</div>
+                                    <div class="dc-song-artist" id="spotifyArtist">Lütfen bekleyin</div>
+                                    
+                                    <div class="dc-progress-wrapper">
+                                        <span id="spotifyStart">00:00</span>
+                                        <div class="dc-progress-bar">
+                                            <div class="dc-progress-fill" id="spotifyProgress"></div>
+                                        </div>
+                                        <span id="spotifyEnd">00:00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="https://discord.gg/NPc9DR4HRH" target="_blank" class="dc-btn">
+                            <i class="fa-solid fa-paper-plane"></i> Send Message!
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const icon = themeToggle.querySelector('i');
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (document.body.getAttribute('data-theme') === 'dark') {
+                document.body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            }
+        });
+
+        const cursorGlow = document.getElementById('cursorGlow');
+        document.addEventListener('mousemove', (e) => {
+            requestAnimationFrame(() => {
+                cursorGlow.style.transform = `translate(calc(${e.clientX}px - 50%), calc(${e.clientY}px - 50%))`;
+            });
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.page-section');
+        const allLinks = document.querySelectorAll('a[href^="#"]'); 
+
+        allLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                
+                if(targetSection) {
+                    e.preventDefault();
+                    
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    if(this.classList.contains('nav-link')){
+                        this.classList.add('active');
+                    } else {
+                        const correspondingNavLink = document.querySelector(`.nav-link[href="#${targetId}"]`);
+                        if(correspondingNavLink) correspondingNavLink.classList.add('active');
+                    }
+                    
+                    sections.forEach(s => s.classList.remove('active'));
+                    targetSection.classList.add('active');
+                }
+            });
+        });
+
+        // --- LANYARD API (DISCORD PP, İSİM & CANLI SPOTIFY) ---
+        const DISCORD_ID = "986939345351082005"; 
+        
+        const spotifyBlock = document.getElementById('spotifyBlock');
+        const spotifySongTitle = document.getElementById('spotifySongTitle');
+        const spotifyArtist = document.getElementById('spotifyArtist');
+        const spotifyAlbumArt = document.getElementById('spotifyAlbumArt');
+        const discordAvatar = document.getElementById('discordAvatar');
+        const discordGlobalName = document.getElementById('discordGlobalName');
+        const discordUsername = document.getElementById('discordUsername');
+        
+        let spotifyTimestamps = null;
+
+        function formatTime(ms) {
+            if (ms < 0) ms = 0;
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateSpotifyProgress() {
+            if (!spotifyTimestamps) return;
+            
+            const now = Date.now();
+            const totalDuration = spotifyTimestamps.end - spotifyTimestamps.start;
+            const currentProgress = now - spotifyTimestamps.start;
+            
+            let percentage = (currentProgress / totalDuration) * 100;
+            if (percentage > 100) percentage = 100;
+            if (percentage < 0) percentage = 0;
+            
+            document.getElementById('spotifyProgress').style.width = percentage + '%';
+            document.getElementById('spotifyStart').textContent = formatTime(currentProgress);
+            document.getElementById('spotifyEnd').textContent = formatTime(totalDuration);
+        }
+
+        function fetchDiscordData() {
+            fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const user = data.data.discord_user;
+                        
+                        if (user) {
+                            if (user.avatar) {
+                                const isAnimated = user.avatar.startsWith("a_");
+                                const extension = isAnimated ? "gif" : "png";
+                                discordAvatar.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${extension}?size=512`;
+                            }
+                            
+                            discordGlobalName.textContent = user.global_name || user.username;
+                            discordUsername.textContent = user.username;
+                        }
+
+                        if (data.data.spotify) {
+                            const spotify = data.data.spotify;
+                            spotifyBlock.style.display = 'block'; 
+                            spotifySongTitle.textContent = spotify.song;
+                            spotifyArtist.textContent = spotify.artist;
+                            spotifyAlbumArt.src = spotify.album_art_url;
+                            
+                            spotifyTimestamps = spotify.timestamps;
+                        } else {
+                            spotifyBlock.style.display = 'none';
+                            spotifyTimestamps = null;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error("Lanyard API hatası:", error);
+                });
+        }
+
+        fetchDiscordData();
+        setInterval(fetchDiscordData, 5000);
+        setInterval(updateSpotifyProgress, 1000);
+    </script>
+</body>
+</html>
